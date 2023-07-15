@@ -42,28 +42,30 @@ public class Main {
         //task_1();
         race();
     }
-public static void threadRace(Car car){
-    Thread threadCar = new Thread(() -> {
-        System.out.println("Started "+car.name()+" "+LocalDateTime.now());
-        for (int i = 0; i < 1000; i++) {
-            try {
-                int sp = car.setSpeed();
-                Thread.sleep( sp);
-                i++;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+
+    public static void threadRace(Car car) {
+        Thread threadCar = new Thread(() -> {
+            System.out.println("Started " + car.name() + " " + LocalDateTime.now());
+            for (int i = 0; i < 1000; i++) {
+                try {
+                    int sp = car.setSpeed();
+                    Thread.sleep(sp);
+                    i++;
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-        System.out.println("Finished " + car.name() +" "+LocalDateTime.now());
-    });
-    threadCar.start();
-}
+            System.out.println("Finished " + car.name() + " " + LocalDateTime.now());
+        });
+        threadCar.start();
+    }
+
     public static void race() {
         List<Car> cars = List.of(new Car("Car 1", 0, 0),
                 new Car("Car 2", 0, 0),
                 new Car("Car 3", 0, 0)
-                );
-        for (Car car:cars) {
+        );
+        for (Car car : cars) {
             threadRace(car);
         }
     }
