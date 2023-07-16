@@ -25,9 +25,17 @@ package org.example;
 //        Створіть запис загальних даних із потоку в окремому файлі на жорсткому диску.
 
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+
+import static java.nio.file.Files.newBufferedReader;
 
 record Car(String name, int speed, int position) {
     public int setSpeed() {
@@ -37,10 +45,54 @@ record Car(String name, int speed, int position) {
     }
 }
 
+class Calculation extends Thread implements Runnable {
+    @Override
+    public void run() {
+        Path filePath = Path.of("C:", "Users", "LENOVO", "Desktop", "Lipsum");
+        System.out.println(filePath);
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(filePath.toString() + ".txt"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String curLine;
+        while (true) {
+            try {
+                if (!((curLine = bufferedReader.readLine()) != null)) break;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(curLine);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            bufferedReader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        //task_1();
-        race();
+    static int i = 0;
+
+    public static void main(String[] args) throws InterruptedException, IOException {
+//        task_1();
+//        race();
+        makeThread();
+    }
+
+    public static void makeThread() throws InterruptedException, RuntimeException {
+        Thread threadCalculation1 = new Thread(new Calculation());
+        Thread threadCalculation2 = new Thread(new Calculation());
+
+        threadCalculation1.start();
+        threadCalculation1.interrupt();
     }
 
     public static void threadRace(Car car) {
@@ -180,3 +232,4 @@ public class Main {
 
 
 }
+
